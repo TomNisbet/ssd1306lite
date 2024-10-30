@@ -6,13 +6,16 @@ SSD1306lite is a very lightweight Arduino hardware driver with text display meth
 
 This code works with 128x64 I2C OLED displays and supports text and very basic bitmap drawing.  It does not support scrolling or arbitrary drawing functions.  It uses minimal RAM and does not require any support libraries.  A hello world sketch only requires a few bytes of RAM.
 
-The I2C code is bit-banged and does not listen for ACK/NACK from the display.  This takes liberties with the I2C standards, but it does work for the SSD1306 hardware.
+This code does not use the Arduino Wire library and requires no buffer space.  The low-level I2C code is based on SSD1306xLED from the [ATtiny85 tinusaur project by Neven Boyanov](https://bitbucket.org/tinusaur/ssd1306xled), which was itself inspired by [IIC_wtihout_ACK](http://www.14blog.com/archives/1358).
 
-This code does not use the Arduino Wire library and requires no buffer space.
+## Demo sketch
 
-The low-level I2C code is based on SSD1306xLED from the [ATtiny85 tinusaur project by Neven Boyanov](https://bitbucket.org/tinusaur/ssd1306xled), which was itself inspired by [IIC_wtihout_ACK](http://www.14blog.com/archives/1358).
+A demo sketch is included to show off the features of the code.  Wire the SDA, SCL, and power pins to an Arduino.  Then open the src.ino file in the Arduino IDE to see a set of sample screens and animations.  This should run on an Uno or Nano with no code changes or configurations required.
+
 
 This has been tested on the Arduino Uno and Nano using the default A4 and A5 ports for SDA and SCL.  It will work with other Arduinos as well, but the port definitions will need to be changed to match the hardware.  Instructions to do this are at the top of the ssd1306.cpp file.
+
+## Features and limitations
 
 Features:
 
@@ -26,7 +29,7 @@ Limitations:
 * Only supports SSD1306-based displays using i2C - no support for SPI displays
 * All text and drawing is constrained to 8-bit boundaries in the vertical direction
 
-## Usage
+## Using the code in a project
 
 The code is not distributed as a library.  To incorporate it, follow these steps:
 
