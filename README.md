@@ -8,10 +8,20 @@ This code works with 128x64 I2C OLED displays and supports text and very basic b
 
 This code does not use the Arduino Wire library and requires no buffer space.  The low-level I2C code is based on SSD1306xLED from the [ATtiny85 tinusaur project by Neven Boyanov](https://bitbucket.org/tinusaur/ssd1306xled), which was itself inspired by [IIC_wtihout_ACK](http://www.14blog.com/archives/1358).
 
+## Hardware connections
+
+SSD1306 displays are native 3.3V devices, but many are advertised as being 5V compatible.  They seem to work fine using 5V for the Vcc, SCL, and SDA signals although this may shorten the life of the display.  Some displays will start to flicker if the Vcc is right at or slightly above 5V.
+
+The SSD1306Lite library supports two modes for the displays.  In the simplest configurations, the display's Vcc is connected to the Arduino's 5V pin and the SCL and SDA signals are driven high and low by the Arduino's A5 and A4 pins.
+
+A better configuration is to connect the display's Vcc to the Arduino's 3.3V pin. SCL
+and SDA are still connected to A5 and A4, but a 4.7K pullup resistor is added from SCL to 3.3V and another from SDA to 3.3V from the Arduino.  In this configuration, the Arduino does not drive the output pins to get a high signal and the pullups provide the 3.3V needed.  This 3.3V configuration is a better match for the display and it is also more compatible with the I2C bus.
+
+**If the pullup resistors are not used, uncomment the NO_PULLUPS define in the ssd1306lite.cpp file.**
+
 ## Demo sketch
 
 A demo sketch is included to show off the features of the code.  Wire the SDA, SCL, and power pins to an Arduino.  Then open the src.ino file in the Arduino IDE to see a set of sample screens and animations.  This should run on an Uno or Nano with no code changes or configurations required.
-
 
 This has been tested on the Arduino Uno and Nano using the default A4 and A5 ports for SDA and SCL.  It will work with other Arduinos as well, but the port definitions will need to be changed to match the hardware.  Instructions to do this are at the top of the ssd1306.cpp file.
 
