@@ -24,20 +24,6 @@
 #include "font6x8.h"
 #include "font8x16.h"
 
-// The slave address of an SSD1306 is seven bits and should be either 0x3c or 0x3d.
-// The bit following the seven address bits is the read/write bit and it is always
-// set to zero to indicate that the microcontroller is writing to the display.
-// 
-// The address and R/W bit are combined below so that the sendByte code can send the
-// adddress and R/W bit as a single byte.
-//
-// Change the SSD1306_ADDR to match the i2C slave address of the display.
-// Some displays may already be marked Addr=78 rather than Addr=3C, but the
-// code below should always be 0x78 or 0x79 two cover the two possible
-// addresses used by the controller.
-#define SSD1306_ADDR    0x78    // Slave address of the display (0x3c << 1) | 0
-//#define SSD1306_ADDR    0x79    // Slave address of the display (0x3d << 1) | 0
-
 // Communication pin definitions.  
 // The default communication pins for an Arduino Uno or Nano are A5 for SCL and A4
 // for SDA.  To use different pins on these Arduinos or to use a different Arduino
@@ -55,28 +41,29 @@
 //
 // SSD1306 displays are native 3.3V devices, but many are advertised as being 5V
 // compatible.  They seem to work fine using 5V for the Vcc, SCL, and SDA signals, 
-//although this may shorten the life of the display.  Some displays will start to
-// flicker if the Vcc is right at or slightly above 5V.
+// although this may shorten the life of the display.  Some displays will flicker
+// if the Vcc is right at or slightly above 5V.
 
-// The SSD1306Lite library supports two modes for the displays.  In the simplest
-// configurations, the display's Vcc is connected to the Arduino's 5V pin and
-// the SCL and SDA signals are driven high and low by the Arduino.
+// The SSD1306Lite library supports two wiring options for the displays.  In the
+// simplest configurations, the display's Vcc is connected to the Arduino's 5V pin
+// and the SCL and SDA signals are driven high and low by the Arduino.
 //
 // A better configuration is to connect the display's Vcc to the Arduino's 3.3V
 // pin and to add a 4.7K pullup resistor from SCL to 3.3V and another from SDA
 // to 3.3V from the Arduino.  In this configuration, the Arduino does not drive
 // the output pins to get a high signal and the pullups provide the 3.3V needed.
 
-// Uncomment the line below if 5V with no pullup resistors is used.
-//#define NO_PULLUPS
+// Uncomment one of the lines below to match the wiring.
+#define WIRING_5V_DIRECT
+//#define WIRING_3V_PULLUP
 
 // Functions to set the SCL and SDA bits as output and to set the bits high and low.
 // All hardware changes can be handled in the definitions above. so there should be
 // no need to edit this code.
-#ifdef NO_PULLUPS
-// In this configuration, the Arduino pons drive the SCL and SDA pins directly.
+#if defined(WIRING_5V_DIRECT)
+// In this configuration, the Arduino pins drive the SCL and SDA pins directly.
 // The INIT functions set the pins as outputs and the Sxx_high and Sxx_low
-// functions drive the pins to Vcc and GND.  The Vcc pin of the display is
+// functions drive the pins to 5V and GND.  The Vcc pin of the display is
 // connected to the Arduino's 5V pin.
 inline void SCL_INIT() { SCL_DDR |= (1 << SCL_PIN); }
 inline void SDA_INIT() { SDA_DDR |= (1 << SDA_PIN); }
@@ -84,7 +71,7 @@ inline void SCL_high() { SCL_PORT |=  (1 << SCL_PIN); }
 inline void SCL_low()  { SCL_PORT &= ~(1 << SCL_PIN); }
 inline void SDA_high() { SDA_PORT |=  (1 << SDA_PIN); }
 inline void SDA_low()  { SDA_PORT &= ~(1 << SDA_PIN); }
-#else
+#elif defined(WIRING_3V_PULLUP)
 // This configuration is more compliant with the I2C standards.  The INIT
 // functions set the SCL and SDA outputs low. The Sxx_low functions set
 // the Arduino pins as outputs, which lets the Arduino pull the SCL and SDA
@@ -97,6 +84,8 @@ inline void SCL_low() { SCL_DDR |= (1 << SCL_PIN); }
 inline void SCL_high()  { SCL_DDR &= ~(1 << SCL_PIN); }
 inline void SDA_low() { SDA_DDR |= (1 << SDA_PIN); }
 inline void SDA_high()  { SDA_DDR &= ~(1 << SDA_PIN); }
+#else
+#error "no wiring mode defined"
 #endif
 
 // SSD1306 Display Controller commands
@@ -148,7 +137,8 @@ static const uint8_t initCommands[] PROGMEM = {
 };
 
 
-SSD1306Display::SSD1306Display(void) {
+SSD1306Display::SSD1306Display(uint8_t addr) {
+    i2cAddress = addr;
     fInvertData = false;
 }
 
@@ -399,7 +389,7 @@ enum {
 // display as data for the Display RAM until ssdDataEnd is called. 
 void SSD1306Display::ssd1306DataBegin(void) {
     i2cSendBegin();
-    i2cSendByte(SSD1306_ADDR);          // address and R/W bit
+    i2cSendByte(i2cAddress);            // address and R/W bit
     i2cSendByte(SSD1306_CTL_DATA);      // D/C bit = data
 }
 
@@ -433,7 +423,7 @@ void SSD1306Display::ssd1306DataPutByte(uint8_t b) {
 // commands until ssdCmdEnd is called. 
 void SSD1306Display::ssd1306CmdBegin(void) {
     i2cSendBegin();
-    i2cSendByte(SSD1306_ADDR);          // address and R/W bit
+    i2cSendByte(i2cAddress);            // address and R/W bit
     i2cSendByte(SSD1306_CTL_COMMAND);   // D/C bit = command
 }
 
