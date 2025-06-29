@@ -15,7 +15,7 @@ Features:
 * Text drawing with single and double-height fonts, 6x8 and 8x16
 * Bitmap display from Arduino PROGMEM (EEPROM) storage
 * Basic fill functions to draw some lines and shapes
-* Extremely lightweight - no buffer external libraries required
+* Extremely lightweight - no RAM buffer or external libraries required
 * Supports dual displays
 
 Limitations:
@@ -29,7 +29,7 @@ This project was designed for applications that need only text and basic graphic
 
 SSD1306 displays are native 3.3V devices, but many are advertised as being 5V compatible.  They seem to work fine using 5V for the _VCC_, _SCL_, and _SDA_ signals although this may shorten the life of the display.  Some displays will flicker if _VCC_ is right at or slightly above 5V.
 
-The SSD1306Lite library supports two software modes to allow different wiring of the displays.  In both configurations, the display's _GND_ is connected to the Arduino's _GND_ pin and the _SCL_ and _SDA_ signals are connected the Arduino's _A5_ and _A4_ pins.
+SSD1306Lite supports two software modes to allow different wiring of the displays.  In both configurations, the display's _GND_ is connected to the Arduino's _GND_ pin and the _SCL_ and _SDA_ signals are connected the Arduino's _A5_ and _A4_ pins.
 
 One of the two #defines below must be uncommented in the ssd1306lite.cpp file to support the different wiring options.
 
@@ -62,7 +62,7 @@ This has been tested on the Arduino Uno and Nano using the default A4 and A5 por
 
 ## Using the code in a project
 
-The code is not distributed as a library.  To incorporate it, follow these steps:
+The code is not distributed as a library. Follow these steps To incorporate SSD1306lite into a project:
 
 * Add the ssd1306lite cpp and h files to your project's directory along with the two font header files.  
 * Include the main header file in your sketch file
@@ -102,7 +102,7 @@ This matches the Display RAM in the SSD1306 controller.  Display RAM is changed 
 
 This same format is used in the font and bitmap image files.  A set of 128 bytes writes 8 full lines of the display.  A set of 1024 bytes are needed to write all 64 lines.
 
-The SSD1306lite text and fill methods write data immediately to the controller's Display RAM.  This allows it to use very little memory because it has no local buffer.  
+The SSD1306lite text and fill methods write data immediately to the controller's Display RAM.  This allows the code to use very little memory because it has no local buffer.  
 
 The downside to this approach is that it restricts text to defined rows with 8 pixels boundaries. A text character can be drawn on the eight display rows 0..7 or 8..15 or up to 56..63, but it cannot be drawn on 3..10, for example.
 
@@ -117,7 +117,7 @@ If arbitrary text placement or more advanced graphics are needed, a different co
 
 ## Dual Displays
 
-SSD1306 displays can be configured to use one of two different I2C bus addresses.  The alternate address is usually set using a soldering iron to move a resistor on the address select pads of the module.  The SSD1306lite library supports using either address, or even driving two different displays in the same project.  
+SSD1306 displays can be configured to use one of two different I2C bus addresses.  The alternate address is usually set using a soldering iron to move a resistor on the address select pads of the display module.  SSD1306lite supports using either address, or even driving two different displays in the same project.  
 
 To use two displays, they must be connected using the WIRING_3V_PULLUP method described above.
 
