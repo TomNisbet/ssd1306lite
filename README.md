@@ -49,7 +49,9 @@ This is the simplest mode to wire, but it may be harder on the display and may c
 
 ![display splash screen](images/wiring-3v-pullup-small.jpg)
 
-A better configuration is to connect the display's _VCC_ to the Arduino's _3.3V_ pin. _SCL_ and _SDA_ are still connected to _A5_ and _A4_, but a 4.7K pullup resistor is added from _SCL_ to _3.3V_ and another from _SDA_ to _3.3V_.  In this configuration, the Arduino only drives the output pins to pull them low. For a high signal, the Arduino configures the pins as inputs and the external pullup resistors pull the tri-state signals to 3.3V.  The 3.3V configuration is a better match for the display and it is also more compatible with the I2C bus.
+A better configuration is to connect the display's _VCC_ to the Arduino's _3.3V_ pin. _SCL_ and _SDA_ are still connected to _A5_ and _A4_, but a 4.7K pullup resistor is added from _SCL_ to _3.3V_ and another from _SDA_ to _3.3V_.  
+
+In this configuration, the Arduino only drives the output pins to pull them low. For a high signal, the Arduino configures the pins as inputs and the external pullup resistors pull the tri-state signals to 3.3V.  The 3.3V configuration is a better match for the display and it is also more compatible with the I2C bus.
 
 > [!WARNING]
 > The physical wiring and the #define in ssd1306lite.cpp **MUST** match.  If WIRING_5V_DIRECT is compiled when pullup resistors are installed, then 5V can be connected on the _3.3V_ line and some components may be damaged.
