@@ -25,6 +25,8 @@ Limitations:
 
 This project was designed for applications that need only text and basic graphics while leaving most of the Arduino resources free for other code.
 
+For an example of a project built with this code, see [superfreq, a simple frequency counter](https://github.com/TomNisbet/superfreq/).
+
 ## Hardware connections
 
 SSD1306 displays are native 3.3V devices, but many are advertised as being 5V compatible.  They seem to work fine using 5V for the _VCC_, _SCL_, and _SDA_ signals although this may shorten the life of the display.  Some displays will flicker if _VCC_ is right at or slightly above 5V.
