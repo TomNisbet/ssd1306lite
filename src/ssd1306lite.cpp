@@ -54,8 +54,8 @@
 // the output pins to get a high signal and the pullups provide the 3.3V needed.
 
 // Uncomment one of the lines below to match the wiring.
-#define WIRING_5V_DIRECT
-//#define WIRING_3V_PULLUP
+//#define WIRING_5V_DIRECT
+#define WIRING_3V_PULLUP
 
 // Functions to set the SCL and SDA bits as output and to set the bits high and low.
 // All hardware changes can be handled in the definitions above. so there should be

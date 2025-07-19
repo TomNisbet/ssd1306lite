@@ -52,7 +52,7 @@ class SSD1306Display {
 
     private:
         bool fInvertData;
-        bool i2cAddress;
+        uint8_t i2cAddress;
 
         void ssd1306DataBegin(void);
         void ssd1306DataPutByte(uint8_t b);
